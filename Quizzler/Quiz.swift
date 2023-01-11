@@ -58,7 +58,11 @@ class Quiz {
     }
     
     func isQuizFinished() -> Bool {
-        return currentQuestion >= (getQuestionCount() - 1)
+        return currentQuestion > (getQuestionCount() - 1)
+    }
+    
+    func isLastQuestionOn() -> Bool {
+        return currentQuestion == (getQuestionCount() - 1)
     }
     
     func getFirstQuestion() -> String {
