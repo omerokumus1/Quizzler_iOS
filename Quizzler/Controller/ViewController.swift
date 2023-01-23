@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
+    @IBOutlet weak var startAgainButton: UIButton!
     
     private let quiz: Quiz = Quiz.getQuizInstance()
     private var chunk: Float = 0
@@ -22,14 +23,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        hideStartAgainButton()
         initScoreText()
         initQuestionText()
         initChunk()
         initProgressBar()
     }
     
+    private func hideStartAgainButton() {
+        startAgainButton.isUserInteractionEnabled = false
+        startAgainButton.alpha = 0
+    }
+    
     private func initScoreText() {
-        scoreLabel.text = "0"
+        scoreLabel.text = "Score: 0"
     }
     
     private func initQuestionText() {
@@ -41,12 +48,12 @@ class ViewController: UIViewController {
     }
     
     private func initProgressBar() {
-        resetProgressBar()
+        progressBar.progress = 0
         progressBar.progress += chunk
     }
     
     private func resetProgressBar() {
-        progressBar.progress = 0
+        initProgressBar()
     }
     
     
@@ -59,6 +66,27 @@ class ViewController: UIViewController {
             setTimer()
         }
     }
+    
+    
+    @IBAction func startAgainButtonPressed(_ sender: UIButton) {
+        hideStartAgainButton()
+        resetScoreLabel()
+        resetProgressBar()
+        showTrueFalseButtons()
+        unfreezeButtons()
+        initQuestionText()
+        quiz.resetQuiz()
+    }
+    
+    private func showTrueFalseButtons() {
+        trueButton.alpha = 1.0
+        falseButton.alpha = 1.0
+    }
+    
+    private func resetScoreLabel() {
+        initScoreText()
+    }
+    
     
     private func checkAndEncolorButtons(_ button: UIButton,
                                         _ otherButton: UIButton) {
@@ -119,10 +147,10 @@ class ViewController: UIViewController {
     }
     
     @objc func updateUI() {
+        clearButtonColors()
         if quiz.isLastQuestionOn() {
             finishQuiz()
         } else {
-        clearButtonColors()
         getNextQuestion()
         incrementProgressBar()
         unfreezeButtons()
@@ -133,6 +161,8 @@ class ViewController: UIViewController {
         questionTextLabel.text = "Quiz is finished. Your score is \(quiz.getScore())/\(quiz.getQuestionCount())"
         freezeButtons()
         hideButtons()
+        showStartAgainButton()
+        timer?.invalidate()
     }
     
     private func hideButtons() {
@@ -163,6 +193,11 @@ class ViewController: UIViewController {
     private func unfreezeButtons() {
         trueButton.isUserInteractionEnabled = true
         falseButton.isUserInteractionEnabled = true
+    }
+    
+    private func showStartAgainButton() {
+        startAgainButton.isUserInteractionEnabled = true
+        startAgainButton.alpha = 1.0
     }
     
 }
