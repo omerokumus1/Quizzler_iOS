@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Quizzler" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="Quizzler" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -102,12 +102,12 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="falseButton" destination="RNH-Sd-i6n" id="bCi-Hw-ken"/>
-                        <outlet property="progressBar" destination="fZT-JF-pBg" id="6Cz-iw-7jM"/>
-                        <outlet property="questionTextLabel" destination="z1E-9X-q6M" id="ccB-Sy-XLS"/>
-                        <outlet property="scoreLabel" destination="V4n-ym-h0L" id="Zci-Fc-gC4"/>
-                        <outlet property="startAgainButton" destination="4ok-Cc-4gc" id="ms2-Qf-BcK"/>
-                        <outlet property="trueButton" destination="16m-cT-FPc" id="acY-Ha-D8S"/>
+                        <outlet property="falseButton" destination="RNH-Sd-i6n" id="qDq-6x-hbD"/>
+                        <outlet property="progressBar" destination="fZT-JF-pBg" id="RXn-eq-opk"/>
+                        <outlet property="questionTextLabel" destination="z1E-9X-q6M" id="7t4-b3-rxP"/>
+                        <outlet property="scoreLabel" destination="V4n-ym-h0L" id="R7M-3R-EET"/>
+                        <outlet property="startAgainButton" destination="4ok-Cc-4gc" id="jrG-Kg-0em"/>
+                        <outlet property="trueButton" destination="16m-cT-FPc" id="6kF-ki-s6A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
