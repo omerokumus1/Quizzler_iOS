@@ -15,8 +15,13 @@ class ObservableObject<T> {
         self.value = value
     }
     
-    func observe(observer: Any?, onValueChanged: ((T) -> Void)?) {
+    func observe(observer: Any?, onValueChanged: @escaping((T) -> Void)) {
         self.observer = observer
+        self.onValueChanged = onValueChanged
+    }
+    
+    func observeImmediately(onValueChanged: @escaping((T) -> Void)) {
+        onValueChanged(value)
         self.onValueChanged = onValueChanged
     }
     
