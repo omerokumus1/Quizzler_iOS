@@ -34,6 +34,7 @@ class MainViewController: UIViewController {
         viewModel.isAnswerTrue.observe(observer: self) { [self] isAnswerTrue in
             if isAnswerTrue {
                 viewModel.increaseScore()
+                updateScoreLabel()
                 greenify(clickedButton)
             } else {
                 greenify(getOtherButton())
