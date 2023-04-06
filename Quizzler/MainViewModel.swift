@@ -6,62 +6,82 @@
 //
 
 import Foundation
+import Combine
+
+extension Notification.Name {
+    static let currentQuestionText = Notification.Name(rawValue: "currentQuestionText")
+    static let isTimerUp = Notification.Name(rawValue: "isTimerUp")
+    static let isAnswerTrue = Notification.Name(rawValue: "isAnswerTrue")
+}
 
 class MainViewModel {
     private lazy var quiz = Quiz()
     private var quizTimer: QuizTimer? = nil
-    private var mCurrentQuestion = 0
+    private var currentQuestion = 0
     
-    private var mScore = 0
-    var score: Int { mScore }
+    private(set) var score = 0
     
-    private var mCurrentQuestionText = ObservableObject<String?>(value: nil)
-    var currentQuestionText: ObservableObject<String?> { mCurrentQuestionText }
+    private var currentQuestionText: String? = nil {
+        didSet {
+            if currentQuestionText == nil {
+                NotificationCenter.default.post(name: .currentQuestionText, object: MainViewModel.self, userInfo: [:])
+            } else {
+                NotificationCenter.default.post(name: .currentQuestionText, object: MainViewModel.self,
+                                                userInfo: [Notification.Name.currentQuestionText: currentQuestionText!])
+            }
+            
+        }
+    }
     
-    private var mIsTimerUp = ObservableObject(value: false)
-    var isTimerUp: ObservableObject<Bool> { mIsTimerUp }
+    private var isTimerUp = false {
+        didSet {
+            NotificationCenter.default.post(name: .isTimerUp, object: MainViewModel.self,
+                                            userInfo: [Notification.Name.isTimerUp: isTimerUp])
+        }
+    }
     
-    private var mIsQuizFinished = false
-    var isQuizFinished: Bool { mIsQuizFinished }
+    private var isAnswerTrue = false {
+        didSet {
+            NotificationCenter.default.post(name: .isAnswerTrue, object: MainViewModel.self,
+                                            userInfo: [Notification.Name.isAnswerTrue: isAnswerTrue])
+        }
+    }
     
-    private var mIsLastQuestionOn = false
-    var isLastQuestionOn: Bool { mIsLastQuestionOn }
-    
-    private var mIsAnswerTrue = ObservableObject(value: false)
-    var isAnswerTrue: ObservableObject<Bool> { mIsAnswerTrue }
+    private var isLastQuestionOn = false
     
     var questionCount: Int { quiz.questionCount }
     
     var firstQuestion: String { quiz.firstQuestion }
     
     init() {
-        mCurrentQuestionText.setValue(value: firstQuestion)
+        currentQuestionText = firstQuestion
+        
     }
     
     func setIsAnswerCorrect(_ answer: String) {
-        mIsAnswerTrue.setValue(value: quiz.isAnswerTrue(answer, mCurrentQuestion))
+        isAnswerTrue = quiz.isAnswerTrue(answer, currentQuestion)
     }
     
     func increaseScore() {
-        mScore += 1
+        score += 1
     }
     
     func resetQuiz() {
-        mScore = 0
-        mCurrentQuestion = 0
+        score = 0
+        currentQuestion = 0
     }
     
     func startTimer(forSeconds: Int) {
         quizTimer = QuizTimer(totalSeconds: forSeconds) { [self] in
-            mIsTimerUp.setValue(value: true)
-            mIsTimerUp.setValue(value: false, doNotNotify: true)
+            isTimerUp = true
+            isTimerUp = false
         }
         quizTimer?.startTimer()
     }
     
     func nextQuestion() {
-        mCurrentQuestion += 1
-        mCurrentQuestionText.setValue(value: quiz.getQuestion(mCurrentQuestion))
+        currentQuestion += 1
+        currentQuestionText = quiz.getQuestion(currentQuestion)
     }
     
     deinit {

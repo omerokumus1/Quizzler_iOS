@@ -6,9 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class MainViewController: UIViewController {
-        
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var questionTextLabel: UILabel!
     @IBOutlet weak var startAgainButton: UIButton!
@@ -30,35 +34,54 @@ class MainViewController: UIViewController {
         observeViewModel()
     }
     
+    
+    
     private func observeViewModel() {
-        viewModel.isAnswerTrue.observe(observer: self) { [self] isAnswerTrue in
-            if isAnswerTrue {
-                viewModel.increaseScore()
-                updateScoreLabel()
-                greenify(clickedButton)
-            } else {
-                greenify(getOtherButton())
-                redify(clickedButton)
-            }
+        // isAnswerTrue, isTimerUp, currentQuestionText
+        NotificationCenter.default.addObserver(self, selector: #selector(observeIsAnswerTrue),
+                                               name: .isAnswerTrue, object: MainViewModel.self)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(observeIsTimerUp),
+                                               name: NSNotification.Name.isTimerUp, object: MainViewModel.self)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(observeCurrentQuestionText),
+                                               name: NSNotification.Name.currentQuestionText, object: MainViewModel.self)
+
+    }
+    
+    @objc private func observeIsAnswerTrue(_ notification: NSNotification) {
+        guard let userInfo = notification.userInfo as? NSDictionary else { return }
+        guard let isAnswerTrue = userInfo[Notification.Name.isAnswerTrue] as? Bool else { return }
+        if  isAnswerTrue == true {
+            viewModel.increaseScore()
+            updateScoreLabel()
+            greenify(clickedButton)
             viewModel.startTimer(forSeconds: 1)
-            
+        } else if isAnswerTrue == false {
+            greenify(getOtherButton())
+            redify(clickedButton)
+            viewModel.startTimer(forSeconds: 1)
         }
-        
-        viewModel.isTimerUp.observe(observer: self) { [self] isTimerUp in
-            if isTimerUp {
-                clearButtonColors()
-                unfreezeButtons()
-                viewModel.nextQuestion()
-                incrementProgressBar()
-            }
+    }
+    
+    @objc private func observeIsTimerUp(_ notification: NSNotification) {
+        guard let userInfo = notification.userInfo as? NSDictionary else {return}
+        guard let isTimerUp = userInfo[Notification.Name.isTimerUp] as? Bool else {return}
+        if isTimerUp {
+            clearButtonColors()
+            unfreezeButtons()
+            viewModel.nextQuestion()
+            incrementProgressBar()
         }
-        
-        viewModel.currentQuestionText.observe(observer: self) { [self] currentQuestionText in
-            if currentQuestionText != nil {
-                questionTextLabel.text = currentQuestionText
-            } else {
-                finishQuiz()                
-            }
+    }
+    
+    @objc private func observeCurrentQuestionText(_ notification: NSNotification) {
+        guard let userInfo = notification.userInfo as? NSDictionary else {return}
+        let currentQuestionText = userInfo[Notification.Name.currentQuestionText] as? String
+        if currentQuestionText != nil {
+            questionTextLabel.text = currentQuestionText
+        } else {
+            finishQuiz()
         }
     }
     
@@ -186,7 +209,7 @@ class MainViewController: UIViewController {
         startAgainButton.alpha = 1.0
     }
     
-
+    
     
 }
 
